@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,12 +10,12 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
+            background: #f4f4f9;
         }
 
         header {
-            background-color: #4CAF50;
-            color: white;
+            background: #4CAF50;
+            color: #fff;
             padding: 1rem;
             text-align: center;
         }
@@ -29,20 +30,21 @@
             margin: 1rem 0;
         }
 
-        table th, table td {
+        th,
+        td {
             border: 1px solid #ddd;
             padding: 0.8rem;
             text-align: left;
         }
 
-        table th {
-            background-color: #4CAF50;
-            color: white;
+        th {
+            background: #4CAF50;
+            color: #fff;
         }
 
         button {
-            background-color: #4CAF50;
-            color: white;
+            background: #4CAF50;
+            color: #fff;
             border: none;
             padding: 0.5rem 1rem;
             cursor: pointer;
@@ -50,7 +52,7 @@
         }
 
         button:hover {
-            background-color: #45a049;
+            background: #45a049;
         }
 
         .form-container {
@@ -58,129 +60,113 @@
             padding: 1rem;
             border: 1px solid #ddd;
             border-radius: 5px;
-            background-color: #fff;
+            background: #fff;
+            display: none;
         }
 
-        .form-container input, .form-container select {
+        .form-container input {
             width: 100%;
             padding: 0.5rem;
             margin: 0.5rem 0;
             border: 1px solid #ddd;
             border-radius: 5px;
         }
-
-        .form-container button {
-            width: 100%;
-        }
     </style>
 </head>
+
 <body>
-
-<header>
-    <h1>Railway Ticket Booking System</h1>
-</header>
-
-<main>
-    <!-- Train List Section -->
-    <section id="train-section">
-        <h2>Available Trains</h2>
-        <table id="train-table">
-            <thead>
-            <tr>
-                <th>Train Name</th>
-                <th>Source</th>
-                <th>Destination</th>
-                <th>Seats Available</th>
-                <th>Book</th>
-            </tr>
-            </thead>
-            <tbody>
-            <!-- Train rows will be dynamically added here -->
-            </tbody>
-        </table>
-    </section>
-
-    <!-- Booking Form Section -->
-    <section id="booking-section" class="form-container" style="display: none;">
-        <h2>Book Train</h2>
-        <form id="booking-form">
-            <input type="hidden" id="train-id">
-            <div>
-                <label for="user-name">Name:</label>
+    <header>
+        <h1>Railway Ticket Booking System</h1>
+    </header>
+    <main>
+        <section id="train-section">
+            <h2>Available Trains</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Train Name</th>
+                        <th>Source</th>
+                        <th>Destination</th>
+                        <th>Seats Available</th>
+                        <th>Book</th>
+                    </tr>
+                </thead>
+                <tbody id="train-table"></tbody>
+            </table>
+        </section>
+        <section class="form-container" id="booking-section">
+            <h2>Book Train</h2>
+            <form id="booking-form">
+                <input type="hidden" id="train-id">
                 <input type="text" id="user-name" placeholder="Enter your name" required>
-            </div>
-            <div>
-                <label for="user-email">Email:</label>
                 <input type="email" id="user-email" placeholder="Enter your email" required>
-            </div>
-            <div>
-                <label for="seats">Seats to Book:</label>
                 <input type="number" id="seats" min="1" placeholder="Enter number of seats" required>
-            </div>
-            <button type="submit">Confirm Booking</button>
-        </form>
-    </section>
-</main>
+                <button type="submit">Confirm Booking</button>
+            </form>
+        </section>
+    </main>
+    <script>
+        const trains = [{
+                id: 1,
+                name: 'Express 1',
+                source: 'City A',
+                destination: 'City B',
+                seatsAvailable: 50
+            },
+            {
+                id: 2,
+                name: 'Express 2',
+                source: 'City C',
+                destination: 'City D',
+                seatsAvailable: 40
+            },
+            {
+                id: 3,
+                name: 'Express 3',
+                source: 'City E',
+                destination: 'City F',
+                seatsAvailable: 30
+            },
+        ];
 
-<script>
-    // Mock API Data (Replace with real backend API calls)
-    const trains = [
-        { id: 1, name: 'Express 1', source: 'City A', destination: 'City B', seatsAvailable: 50 },
-        { id: 2, name: 'Express 2', source: 'City C', destination: 'City D', seatsAvailable: 40 },
-        { id: 3, name: 'Express 3', source: 'City E', destination: 'City F', seatsAvailable: 30 },
-    ];
-
-    // Load trains into the table
-    function loadTrains() {
-        const trainTableBody = document.querySelector('#train-table tbody');
-        trainTableBody.innerHTML = ''; // Clear existing rows
-        trains.forEach(train => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
+        const loadTrains = () => {
+            const trainTable = document.querySelector('#train-table');
+            trainTable.innerHTML = trains.map(train => `
+            <tr>
                 <td>${train.name}</td>
                 <td>${train.source}</td>
                 <td>${train.destination}</td>
                 <td>${train.seatsAvailable}</td>
                 <td><button onclick="openBookingForm(${train.id})">Book</button></td>
-            `;
-            trainTableBody.appendChild(row);
+            </tr>
+        `).join('');
+        };
+
+        const openBookingForm = id => {
+            const train = trains.find(t => t.id === id);
+            if (train) {
+                document.querySelector('#train-id').value = train.id;
+                document.querySelector('#booking-section').style.display = 'block';
+                document.querySelector('#train-section').style.display = 'none';
+            }
+        };
+
+        document.querySelector('#booking-form').addEventListener('submit', e => {
+            e.preventDefault();
+            const id = document.querySelector('#train-id').value;
+            const train = trains.find(t => t.id == id);
+            const seats = +document.querySelector('#seats').value;
+            if (train && train.seatsAvailable >= seats) {
+                train.seatsAvailable -= seats;
+                alert('Booking confirmed!');
+            } else alert('Not enough seats available.');
+            document.querySelector('#booking-section').style.display = 'none';
+            document.querySelector('#train-section').style.display = 'block';
+            loadTrains();
         });
-    }
 
-    // Open Booking Form
-    function openBookingForm(trainId) {
-        const train = trains.find(t => t.id === trainId);
-        if (train) {
-            document.querySelector('#train-id').value = train.id;
-            document.querySelector('#booking-section').style.display = 'block';
-            document.querySelector('#train-section').style.display = 'none';
-        }
-    }
-
-    // Handle Booking Form Submission
-    document.querySelector('#booking-form').addEventListener('submit', function (event) {
-        event.preventDefault();
-        const trainId = document.querySelector('#train-id').value;
-        const userName = document.querySelector('#user-name').value;
-        const userEmail = document.querySelector('#user-email').value;
-        const seats = document.querySelector('#seats').value;
-
-        const train = trains.find(t => t.id == trainId);
-        if (train && train.seatsAvailable >= seats) {
-            train.seatsAvailable -= seats;
-            alert(`Booking confirmed for ${userName}!`);
-        } else {
-            alert('Not enough seats available.');
-        }
-
-        document.querySelector('#booking-section').style.display = 'none';
-        document.querySelector('#train-section').style.display = 'block';
         loadTrains();
-    });
-
-    // Initial Load
-    loadTrains();
-</script>
-
+    </script>
 </body>
+
 </html>
